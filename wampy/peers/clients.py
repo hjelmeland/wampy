@@ -162,6 +162,10 @@ class Client(object):
     def recv_message(self, source_request_id=None):
         return self.session.recv_message(source_request_id=source_request_id)
 
+    def subscribe(self, handler, uri):       # handler(*args, **kwargs)
+        self.session._subscribe_to_topic(handler, uri)
+        return self.session.recv_message()
+
     def _make_rpc(self, message):
         # _make_rpc should not be called directly, rather by a Proxy object
         self.send_message(message)

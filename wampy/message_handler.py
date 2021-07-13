@@ -109,6 +109,7 @@ class MessageHandler(object):
         topic = original_message.topic
 
         session.subscription_map[message_obj.subscription_id] = handler, topic
+        self.session._message_queue.put(True)
 
     def handle_invocation(self, message_obj):
         session = self.session
