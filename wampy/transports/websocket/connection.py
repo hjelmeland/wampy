@@ -376,7 +376,7 @@ class WebSocket(Transport, ParseUrlMixin):
 
 
 class SecureWebSocket(WebSocket):
-    def __init__(self, server_url, certificate_path, ipv=4):
+    def __init__(self, server_url, certificate_path, cert_check=True, ipv=4):
         super(SecureWebSocket, self).__init__(server_url=server_url, ipv=ipv)
 
         # PROTOCOL_TLSv1_1 and PROTOCOL_TLSv1_2 are only available if Python is
@@ -387,6 +387,7 @@ class SecureWebSocket(WebSocket):
             raise WampyError("Your Python Environment does not support TLS")
 
         self.certificate = certificate_path
+        self.cert_check = cert_check
 
     def _connect(self):
         _socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -395,7 +396,7 @@ class SecureWebSocket(WebSocket):
             ssl_version=self.ssl_version,
             ciphers="ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:\
             DH+AES:ECDH+3DES:DH+3DES:RSA+AES:RSA+3DES:!ADH:!AECDH:!MD5:!DSS",
-            cert_reqs=ssl.CERT_REQUIRED,
+            cert_reqs = ssl.CERT_REQUIRED if self.cert_check else ssl.CERT_NONE,
             ca_certs=self.certificate,
         )
 

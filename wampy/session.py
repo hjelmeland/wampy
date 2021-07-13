@@ -42,7 +42,7 @@ class Session(ParseUrlMixin):
     """
 
     def __init__(
-        self, router_url, message_handler, ipv, cert_path,
+        self, router_url, message_handler, ipv, cert_path, cert_check,
         call_timeout, realm, roles, client_name,
     ):
         """ A Session between a Client and a Router.
@@ -68,6 +68,7 @@ class Session(ParseUrlMixin):
         self.message_handler = message_handler
         self.ipv = ipv
         self.cert_path = cert_path
+        self.cert_check = cert_check
         self.call_timeout = call_timeout
         self.realm = realm
         self.roles = roles
@@ -83,6 +84,7 @@ class Session(ParseUrlMixin):
                 server_url=self.url,
                 ipv=self.ipv,
                 certificate_path=self.cert_path,
+                cert_check = self.cert_check
             )
         else:
             raise WampyError(

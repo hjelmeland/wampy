@@ -21,7 +21,7 @@ class Client(object):
     """
 
     def __init__(
-        self, url=DEFAULT_ROUTER_URL, cert_path=None, ipv=4, name=None,
+        self, url=DEFAULT_ROUTER_URL, cert_path=None, cert_check=True, ipv=4, name=None,
         realm=DEFAULT_REALM, roles=DEFAULT_ROLES, call_timeout=DEFAULT_TIMEOUT,
         message_handler_cls=None,
     ):
@@ -38,6 +38,9 @@ class Client(object):
                 If using ``wss`` protocol, a certificate might be required by
                 the Router. If so, provide the path to the certificate here
                 which will be used when connecting the Secure WebSocket.
+            cert_check : Boolean
+                If False do not valdate server certificate, ``cert_path`` not needed.
+                Defaults to True
             ipv : int
                 The Internet Protocol version. Defaults to 4.
             realm : str
@@ -63,6 +66,7 @@ class Client(object):
         self.url = url
         # when using Secure WebSockets
         self.cert_path = cert_path
+        self.cert_check = cert_check
         self.ipv = ipv
 
         # the ``realm`` is the administrive domain to route messages over.
@@ -97,6 +101,7 @@ class Client(object):
             message_handler=self.message_handler,
             ipv=self.ipv,
             cert_path=self.cert_path,
+            cert_check=self.cert_check,
             call_timeout=self.call_timeout,
             realm=self.realm,
             roles=self.roles,
