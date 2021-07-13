@@ -273,7 +273,7 @@ class Session(ParseUrlMixin):
         self.request_ids[request_id] = message, handler
         return self.recv_message()
 
-    def _register_procedure(self, procedure_name, invocation_policy="single"):
+    def _register_procedure(self, handler, procedure_name, invocation_policy="single"):
         """ Register a "procedure" on a Client as callable over the Router.
         The REGISTERED Message is handled by the MessageHandler.
         """
@@ -288,4 +288,5 @@ class Session(ParseUrlMixin):
                 "failed to register callee: %s", procedure_name
             )
 
-        self.request_ids[request_id] = procedure_name
+        self.request_ids[request_id] = procedure_name, handler
+        return self.recv_message()
