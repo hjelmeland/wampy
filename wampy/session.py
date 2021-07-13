@@ -43,7 +43,7 @@ class Session(ParseUrlMixin):
 
     def __init__(
         self, router_url, message_handler, ipv, cert_path, cert_check,
-        call_timeout, realm, roles, client_name,
+        call_timeout, realm, roles, client_name, client
     ):
         """ A Session between a Client and a Router.
 
@@ -73,6 +73,7 @@ class Session(ParseUrlMixin):
         self.realm = realm
         self.roles = roles
         self.client_name = client_name
+        self.client = client
 
         if self.scheme == "ws":
             self.transport = WebSocket(
@@ -173,6 +174,10 @@ class Session(ParseUrlMixin):
             self._managed_thread.kill()
             raise WampyError(message_obj.message)
 
+        if message_obj.WAMP_CODE == Welcome.WAMP_CODE:
+            self.client._register_roles()
+            logger.info("%s has been Authenticated and Welcomed", self.client_name )
+
         if message_obj.WAMP_CODE == Challenge.WAMP_CODE:
             if 'WAMPYSECRET' not in os.environ:
                 raise WampyError(
@@ -201,6 +206,7 @@ class Session(ParseUrlMixin):
                 self._managed_thread.kill()
                 raise WampyError(message_obj.message)
             elif message_obj.WAMP_CODE == Welcome.WAMP_CODE:
+                self.client._register_roles()
                 logger.info(
                     "%s has been Authenticated and Welcomed", self.client_name,
                 )
@@ -265,6 +271,7 @@ class Session(ParseUrlMixin):
             )
 
         self.request_ids[request_id] = message, handler
+        return self.recv_message()
 
     def _register_procedure(self, procedure_name, invocation_policy="single"):
         """ Register a "procedure" on a Client as callable over the Router.

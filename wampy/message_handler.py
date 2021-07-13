@@ -109,6 +109,7 @@ class MessageHandler(object):
         topic = original_message.topic
 
         session.subscription_map[message_obj.subscription_id] = handler, topic
+        self.session._message_queue.put(True)
 
     def handle_invocation(self, message_obj):
         session = self.session
@@ -147,7 +148,6 @@ class MessageHandler(object):
         # this may look to be more appropriate on the Client following starting
         # a Session, but a Session is not guaranteed - and this is the only
         # place that it is.
-        self.client._register_roles()
 
     def process_result(self, message_obj, result, exc=None):
         if self.session.session_id is None:
