@@ -47,4 +47,5 @@ class Result(Message):
     def value(self):
         if self.yield_kwargs:
             return self.yield_kwargs['message']
-        return self.yield_args[0]
+        if self.yield_args:
+            return self.yield_args[0]
