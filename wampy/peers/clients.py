@@ -166,6 +166,12 @@ class Client(object):
         self.session._subscribe_to_topic(handler, uri)
         return self.session.recv_message()
 
+    # register / provide an RPC
+    # handler(*args, **kwargs) returning value.
+    def register(self, handler, uri, invocation_policy="single"):
+        self.session._register_procedure(handler, uri, invocation_policy)
+        return self.session.recv_message()
+
     def _make_rpc(self, message):
         # _make_rpc should not be called directly, rather by a Proxy object
         self.send_message(message)
@@ -194,7 +200,7 @@ class Client(object):
                 procedure_name = maybe_role.__name__
                 invocation_policy = maybe_role.invocation_policy
                 self.session._register_procedure(
-                    procedure_name, invocation_policy
+                    None, procedure_name, invocation_policy
                 )
 
             if hasattr(maybe_role, 'subscriber'):

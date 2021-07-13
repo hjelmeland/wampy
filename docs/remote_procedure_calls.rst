@@ -32,3 +32,23 @@ See `nameko_wamp`_ for usage.
 
 .. _nameko: https://github.com/nameko/nameko
 .. _nameko_wamp: https://github.com/noisyboiler/nameko-wamp
+
+Register / provide RPC
+----------------------
+
+::
+
+    from wampy.peers import Client
+    from wampy.messages.error import Error
+
+    def rpc_handler(*args, **kwargs):
+        print("rpc_handler called : ", args, kwargs)
+        return 42
+
+    client = Client()
+    client.start()
+    result = client.register(rpc_handler, "myservice.rpc")
+    if isinstance(result, Error):
+        print (result)
+    else:
+        assert result == True

@@ -117,8 +117,9 @@ class MessageHandler(object):
         args = message_obj.call_args
         kwargs = message_obj.call_kwargs
 
-        procedure_name = session.registration_map[message_obj.registration_id]
-        procedure = getattr(self.client, procedure_name)
+        procedure_name, procedure = session.registration_map[message_obj.registration_id]
+        if procedure == None:
+            procedure = getattr(self.client, procedure_name)
 
         try:
             result = procedure(*args, **kwargs)
@@ -133,9 +134,10 @@ class MessageHandler(object):
 
     def handle_registered(self, message_obj):
         session = self.session
-        procedure_name = session.request_ids[message_obj.request_id]
-        session.registration_map[message_obj.registration_id] = procedure_name
+        procedure_name, handler = session.request_ids[message_obj.request_id]
+        session.registration_map[message_obj.registration_id] = procedure_name, handler
         logger.info("registrated %s for %s", procedure_name, self.client.name)
+        self.session._message_queue.put(True)
 
     def handle_result(self, message_obj):
         # result of RPC needs to be passed back to the Client app
@@ -158,7 +160,7 @@ class MessageHandler(object):
             )
             return
 
-        procedure_name = self.session.registration_map[
+        procedure_name, _func = self.session.registration_map[
             message_obj.registration_id
         ]
 
