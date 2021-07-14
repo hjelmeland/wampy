@@ -13,6 +13,7 @@ from . hello import Hello
 from . invocation import Invocation
 from . goodbye import Goodbye
 from . publish import Publish
+from . published import Published
 from . register import Register
 from . registered import Registered
 from . result import Result
@@ -24,7 +25,7 @@ from . welcome import Welcome
 
 __all__ = [
     Abort, Authenticate, Call, Challenge, Error, Event, Goodbye, Hello,
-    Invocation, Publish, Register, Registered, Result, Subscribe,
+    Invocation, Publish, Published, Register, Registered, Result, Subscribe,
     Subscribed, Welcome, Yield
 ]
 
@@ -38,6 +39,7 @@ MESSAGE_TYPE_MAP = {
     6: Goodbye,
     8: Error,
     16: Publish,
+    17: Published,
     32: Subscribe,
     33: Subscribed,
     36: Event,
