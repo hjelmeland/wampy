@@ -35,3 +35,5 @@ class PublishProxy:
         logger.info('publishing message: "%s"', message.message)
 
         self.client.send_message(message)
+        if kwargs["options"].get("acknowledge"):
+            return self.client.recv_message()
