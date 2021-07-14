@@ -44,16 +44,10 @@ class Error(object):
         self.error = error
         self.args_list = args_list or []
         self.kwargs_dict = kwargs_dict or {}
+        self.details = details or {}
 
-        # wampy is not implementing ``details`` which appears to be an
-        # alternative to args and kwargs
-        if details:
-            raise WampyError(
-                "Not Implemented: must use ``args_list`` and '"
-                "``kwargs_dict, not ``details``"
-            )
-        self.details = {}
-
+    def __str__(self):
+        return f'Error: error={self.error}, details={self.details}'
     @property
     def message(self):
         return [
